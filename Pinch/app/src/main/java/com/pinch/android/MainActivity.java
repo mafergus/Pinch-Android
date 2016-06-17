@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.v("MNF", "WELCOME");
+
         Firebase.setAndroidContext(this);
 
         Firebase myFirebaseRef = new Firebase("https://pinchdev.firebaseio.com/");

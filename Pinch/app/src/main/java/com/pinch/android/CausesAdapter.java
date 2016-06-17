@@ -1,6 +1,7 @@
 package com.pinch.android;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.GsonBuilder;
 import com.pinch.android.model.Cause;
 import com.squareup.picasso.Picasso;
 
@@ -50,7 +52,7 @@ public class CausesAdapter extends RecyclerView.Adapter<CausesAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         private View rootView;
         private ImageView causeImage;
@@ -60,10 +62,20 @@ public class CausesAdapter extends RecyclerView.Adapter<CausesAdapter.ViewHolder
         private TextView events;
         private TextView raised;
 
+        private Cause cause;
+
         public ViewHolder(View view) {
             super(view);
-
             this.rootView = view;
+            this.rootView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, CauseDetailActivity.class);
+                    String objectJson = new GsonBuilder().create().toJson(cause);
+                    intent.putExtra("cause", objectJson);
+                    context.startActivity(intent);
+                }
+            });
             this.causeImage = (ImageView)view.findViewById(R.id.causeImage);
             this.title = (TextView)view.findViewById(R.id.title);
             this.text = (TextView)view.findViewById(R.id.text);
@@ -73,6 +85,8 @@ public class CausesAdapter extends RecyclerView.Adapter<CausesAdapter.ViewHolder
         }
 
         public void populate(Context context, Cause cause) {
+            this.cause = cause;
+
             Picasso.with(context).load(cause.leadingImage).into(this.causeImage);
             this.title.setText(cause.title);
             this.text.setText(cause.detail);
